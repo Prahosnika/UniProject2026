@@ -1,5 +1,6 @@
 package bg.tu_varna.sit.f24621702.task.models;
 
+/** Описва преход между две състояния чрез определен символ. */
 public class Transition {
     private String fromState;
     private String toState;
@@ -11,7 +12,6 @@ public class Transition {
         this.symbol = symbol;
     }
 
-    // Getters
     public String getFromState() { return fromState; }
     public String getToState() { return toState; }
     public String getSymbol() { return symbol; }

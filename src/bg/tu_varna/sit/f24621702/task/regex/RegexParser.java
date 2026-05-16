@@ -4,8 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * Клас за парсване на регулярни изрази.
+ * Превръща израза от Infix (стандартен) в Postfix (обратен полски запис) формат.
+ */
 public class RegexParser {
-    // Дефинираме приоритет на операторите
+    /** Карта на приоритетите на операторите. */
     private static final Map<Character, Integer> precedence = new HashMap<>();
     static {
         precedence.put('*', 3);
@@ -13,7 +17,11 @@ public class RegexParser {
         precedence.put('|', 1);
     }
 
-    // Добавяме изрични точки за конкатенация (напр. "ab" става "a.b")
+    /**
+     * Добавя оператора за конкатенация '.' на местата, където тя е подразбираща се.
+     * @param regex Първоначален израз.
+     * @return Форматиран израз с явни оператори за конкатенация.
+     */
     private String formatRegex(String regex) {
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < regex.length(); i++) {
@@ -29,7 +37,11 @@ public class RegexParser {
         return res.toString();
     }
 
-    // Превръщане в Postfix (Обратен полски запис)
+    /**
+     * Трансформира израза в Postfix нотация за Thompson's construction.
+     * @param regex Входящ израз.
+     * @return Postfix низ.
+     */
     public String infixToPostfix(String regex) {
         String formatted = formatRegex(regex);
         StringBuilder output = new StringBuilder();

@@ -2,13 +2,23 @@ package bg.tu_varna.sit.f24621702.task.commands;
 
 import bg.tu_varna.sit.f24621702.task.interfaces.Command;
 import bg.tu_varna.sit.f24621702.task.services.FileService;
-
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Фабрика за създаване и управление на потребителски команди.
+ * Класът инициализира всички налични команди и ги съхранява в карта (Map) за бърз достъп.
+ * Използва шаблона "Factory" за разделяне на логиката по създаване от логиката по изпълнение.
+ */
 public class CommandFactory {
+    /** Списък с регистрирани команди, където ключът е името на командата в малки букви. */
     private final Map<String, Command> commands = new HashMap<>();
 
+    /**
+     * Конструктор на фабриката. Инициализира всички команди и ги асоциира с техните ключове.
+     *
+     * @param fileService Услугата, която предоставя бизнес логиката за работа с автомати.
+     */
     public CommandFactory(FileService fileService) {
         commands.put("list", new ListCommand(fileService));
         commands.put("print", new PrintCommand(fileService));
@@ -23,14 +33,17 @@ public class CommandFactory {
         commands.put("determinize", new DeterminizeCommand(fileService));
         commands.put("open", new OpenCommand(fileService));
         commands.put("help", new HelpCommand());
-        commands.put("close", (args) -> fileService.close()); // Ламбда за по-простите команди
+        commands.put("close", (args) -> fileService.close());
 
-        // В CommandFactory за командата "save":
         commands.put("save", (args) -> {
             if (args.length == 0) {
-                fileService.save(); // Системен запис на целия файл
+                fileService.save();
             } else if (args.length == 2) {
-                new SaveSpecificCommand(fileService).execute(args); // Запис на конкретен автомат
+                try {
+                    new SaveSpecificCommand(fileService).execute(args);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             } else {
                 System.out.println("Usage: save OR save <id> <filename>");
             }
@@ -47,6 +60,12 @@ public class CommandFactory {
         });
     }
 
+    /**
+     * Намира команда по нейното име.
+     *
+     * @param commandName Името на командата (независимо от регистъра).
+     * @return Обект, имплементиращ интерфейса Command, или null ако не е намерена.
+     */
     public Command getCommand(String commandName) {
         return commands.get(commandName.toLowerCase());
     }

@@ -11,23 +11,39 @@ import java.util.Scanner;
 
 import static bg.tu_varna.sit.f24621702.task.ui.ConsoleUI.*;
 
+/**
+ * Основен клас за управление на жизнения цикъл на приложението.
+ * Реализира шаблона Singleton и управлява четенето на входни данни и изпълнението на команди.
+ */
 public class Engine {
     private static Engine instance;
     private final FileService fileService;
     private final CommandFactory commandFactory;
     private final Scanner scanner;
 
+    /**
+     * Частен конструктор за инициализация на услугите и фабриката за команди.
+     */
     private Engine() {
         this.fileService = FileService.getInstance();
         this.commandFactory = new CommandFactory(this.fileService);
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Връща единствената инстанция на Engine.
+     * @return Инстанция на класа Engine.
+     */
     public static Engine getInstance() {
         if (instance == null) instance = new Engine();
         return instance;
     }
 
+    /**
+     * Стартира основния цикъл на програмата. Чете вход от конзолата,
+     * парсва аргументите и извиква съответните команди.
+     * @throws AutomataException при грешка в работата на автоматите.
+     */
     public void run() throws AutomataException {
         ConsoleUI.printBanner();
 

@@ -4,8 +4,19 @@ import bg.tu_varna.sit.f24621702.task.models.*;
 import bg.tu_varna.sit.f24621702.task.services.base.AbstractAutomatonService;
 import java.util.*;
 
+/**
+ * Услуга, имплементираща алгоритми за анализ и симулация на автомати.
+ * Включва проверка на думи, проверка за празен език и детерминиране (Subset Construction).
+ */
 public class AnalysisService extends AbstractAutomatonService {
 
+    /**
+     * Симулира работата на автомат върху дадена дума.
+     * Използва ε-затваряне за поддръжка на недетерминирани автомати (NFA).
+     * @param a Автоматът за симулация.
+     * @param word Думата, която се тества.
+     * @return true, ако думата принадлежи на езика на автомата.
+     */
     public boolean recognize(Automaton a, String word) {
         Set<String> currentStates = epsilonClosure(Collections.singleton(a.getInitialState()), a);
 
@@ -29,6 +40,12 @@ public class AnalysisService extends AbstractAutomatonService {
         return false;
     }
 
+    /**
+     * Проверява дали езикът на автомата е празен (т.е. няма път до финално състояние).
+     * Използва алгоритъм за обхождане в ширина (BFS).
+     * @param a Автомат за проверка.
+     * @return true, ако никое финално състояние не е достижимо.
+     */
     public boolean isLanguageEmpty(Automaton a) {
         Set<String> visited = new HashSet<>();
         Queue<String> queue = new LinkedList<>();
@@ -48,6 +65,12 @@ public class AnalysisService extends AbstractAutomatonService {
         return true;
     }
 
+    /**
+     * Трансформира недетерминиран краен автомат (НКА) в детерминиран (ДКА).
+     * Реализира алгоритъма за изграждане на подмножества (Subset Construction).
+     * @param nfa Изходният недетерминиран автомат.
+     * @return Нов детерминиран автомат.
+     */
     public Automaton determinize(Automaton nfa) {
         Automaton dfa = new Automaton("det_" + nfa.getId());
         Set<String> alphabet = new HashSet<>();
@@ -60,13 +83,19 @@ public class AnalysisService extends AbstractAutomatonService {
         dfaStatesMap.put(startSet, "D0");
         unprocessed.add(startSet);
         dfa.setInitialState("D0");
+        dfa.addState("D0");
 
         int idx = 1;
         while (!unprocessed.isEmpty()) {
             Set<String> currentSet = unprocessed.poll();
             String currentName = dfaStatesMap.get(currentSet);
 
-            for (String s : currentSet) if (nfa.getFinalStates().contains(s)) dfa.addFinalState(currentName);
+            for (String s : currentSet) {
+                if (nfa.getFinalStates().contains(s)) {
+                    dfa.addFinalState(currentName);
+                    break;
+                }
+            }
 
             for (String sym : alphabet) {
                 Set<String> move = new HashSet<>();
@@ -81,6 +110,7 @@ public class AnalysisService extends AbstractAutomatonService {
                     String newName = "D" + (idx++);
                     dfaStatesMap.put(target, newName);
                     unprocessed.add(target);
+                    dfa.addState(newName);
                 }
                 dfa.addTransition(new Transition(currentName, dfaStatesMap.get(target), sym));
             }

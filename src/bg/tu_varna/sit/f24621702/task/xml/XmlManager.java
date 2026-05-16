@@ -19,8 +19,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Имплементация на StorageStrategy за работа с XML файлове.
+ * Използва DOM (Document Object Model) за четене и запис на данни.
+ */
 public class XmlManager implements StorageStrategy {
 
+    /**
+     * Десериализира автомати от XML файл.
+     * @param filePath Път до файла.
+     * @return Списък с обекти Automaton.
+     * @throws Exception При грешка в структурата на XML или липсващ файл.
+     */
     @Override
     public List<Automaton> load(String filePath) throws Exception {
         List<Automaton> automata = new ArrayList<>();
@@ -60,6 +70,12 @@ public class XmlManager implements StorageStrategy {
         return automata;
     }
 
+    /**
+     * Сериализира списък с автомати в XML файл.
+     * @param filePath Път до изходния файл.
+     * @param automata Списък за запис.
+     * @throws Exception При грешка по време на трансформациите.
+     */
     @Override
     public void save(String filePath, List<Automaton> automata) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

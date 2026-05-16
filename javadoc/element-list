@@ -1,0 +1,16 @@
+bg.tu_varna.sit.f24621702.task
+bg.tu_varna.sit.f24621702.task.commands
+bg.tu_varna.sit.f24621702.task.core
+bg.tu_varna.sit.f24621702.task.exceptions
+bg.tu_varna.sit.f24621702.task.interfaces
+bg.tu_varna.sit.f24621702.task.models
+bg.tu_varna.sit.f24621702.task.observer
+bg.tu_varna.sit.f24621702.task.regex
+bg.tu_varna.sit.f24621702.task.regex.nodes
+bg.tu_varna.sit.f24621702.task.services
+bg.tu_varna.sit.f24621702.task.services.base
+bg.tu_varna.sit.f24621702.task.services.impl
+bg.tu_varna.sit.f24621702.task.states
+bg.tu_varna.sit.f24621702.task.ui
+bg.tu_varna.sit.f24621702.task.visitor
+bg.tu_varna.sit.f24621702.task.xml

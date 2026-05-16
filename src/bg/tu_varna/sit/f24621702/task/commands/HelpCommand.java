@@ -1,11 +1,17 @@
 package bg.tu_varna.sit.f24621702.task.commands;
 
 import bg.tu_varna.sit.f24621702.task.interfaces.Command;
-
 import static bg.tu_varna.sit.f24621702.task.ui.ConsoleUI.RESET;
 import static bg.tu_varna.sit.f24621702.task.ui.ConsoleUI.YELLOW;
 
+/**
+ * Команда за извеждане на списък с всички поддържани команди и кратко описание на тяхната употреба.
+ */
 public class HelpCommand implements Command {
+    /**
+     * Принтира форматирана помощна информация в конзолата.
+     * @param args Не се очакват аргументи.
+     */
     @Override
     public void execute(String[] args) {
         System.out.println(YELLOW + "\n--- СИСТЕМНИ КОМАНДИ ---" + RESET);
