@@ -5,6 +5,7 @@ import bg.tu_varna.sit.f24621702.task.exceptions.InvalidRegexException;
 import bg.tu_varna.sit.f24621702.task.interfaces.StorageStrategy;
 import bg.tu_varna.sit.f24621702.task.models.Automaton;
 import bg.tu_varna.sit.f24621702.task.models.AutomatonBuilder;
+import bg.tu_varna.sit.f24621702.task.models.Symbol;
 import bg.tu_varna.sit.f24621702.task.models.Transition;
 import bg.tu_varna.sit.f24621702.task.observer.AuditLogger;
 import bg.tu_varna.sit.f24621702.task.observer.AutomatonObserver;
@@ -219,7 +220,7 @@ public class FileService {
     }
 
     private boolean isEpsilon(String sym) {
-        return sym.equalsIgnoreCase("epsilon") || sym.equals("ε") || sym.isEmpty();
+        return sym.equalsIgnoreCase(Symbol.EPSILON.getLiteral()) || sym.isEmpty();
     }
 
     public void union(String id1, String id2) throws AutomatonNotFoundException {
@@ -297,7 +298,7 @@ public class FileService {
         res.setInitialState(prefix + a.getInitialState());
         for (String f : a.getFinalStates()) {
             res.addFinalState(prefix + f);
-            res.addTransition(new Transition(prefix + f, prefix + a.getInitialState(), "epsilon"));
+            res.addTransition(new Transition(prefix + f, prefix + a.getInitialState(), Symbol.EPSILON.getLiteral()));
         }
         return res;
     }
@@ -308,20 +309,39 @@ public class FileService {
         mergeWithUniqueStates(res, a1, p1); mergeWithUniqueStates(res, a2, p2);
         res.setInitialState(p1 + a1.getInitialState());
         for (String f : a2.getFinalStates()) res.addFinalState(p2 + f);
-        for (String f : a1.getFinalStates()) res.addTransition(new Transition(p1 + f, p2 + a2.getInitialState(), "epsilon"));
+        for (String f : a1.getFinalStates()) res.addTransition(new Transition(p1 + f, p2 + a2.getInitialState(), Symbol.EPSILON.getLiteral()));
         return res;
     }
 
     public Automaton applyUnion(Automaton a1, Automaton a2) {
         Automaton res = new Automaton("union_" + (stateCounter++));
-        String p1 = "u1_" + (stateCounter++) + "_", p2 = "u2_" + (stateCounter++) + "_";
-        mergeWithUniqueStates(res, a1, p1); mergeWithUniqueStates(res, a2, p2);
-        String start = "start" + (stateCounter++), end = "final" + (stateCounter++);
-        res.setInitialState(start); res.addFinalState(end);
-        res.addTransition(new Transition(start, p1 + a1.getInitialState(), "epsilon"));
-        res.addTransition(new Transition(start, p2 + a2.getInitialState(), "epsilon"));
-        for (String f : a1.getFinalStates()) res.addTransition(new Transition(p1 + f, end, "epsilon"));
-        for (String f : a2.getFinalStates()) res.addTransition(new Transition(p2 + f, end, "epsilon"));
+        String p1 = "u1_" + (stateCounter++) + "_";
+        String p2 = "u2_" + (stateCounter++) + "_";
+
+        mergeWithUniqueStates(res, a1, p1);
+        mergeWithUniqueStates(res, a2, p2);
+
+        String start = "start" + (stateCounter++);
+        String end = "final" + (stateCounter++);
+
+        res.setInitialState(start);
+        res.addFinalState(end);
+        res.addState(start);
+        res.addState(end);
+
+        // Използваме Enum за началните епсилон преходи
+        res.addTransition(new Transition(start, p1 + a1.getInitialState(), Symbol.EPSILON.getLiteral()));
+        res.addTransition(new Transition(start, p2 + a2.getInitialState(), Symbol.EPSILON.getLiteral()));
+
+        // Епсилон преходи от финалните състояния на ПЪРВИЯ автомат
+        for (String f : a1.getFinalStates()) {
+            res.addTransition(new Transition(p1 + f, end, Symbol.EPSILON.getLiteral()));
+        }
+
+        // Епсилон преходи от финалните състояния на ВТОРИЯ автомат
+        for (String f : a2.getFinalStates()) {
+            res.addTransition(new Transition(p2 + f, end, Symbol.EPSILON.getLiteral()));
+        }
         return res;
     }
 
@@ -331,7 +351,6 @@ public class FileService {
             target.addState(prefix + t.getFromState()); target.addState(prefix + t.getToState());
         }
     }
-
 
     public void determinize(String id) throws AutomatonNotFoundException {
         Automaton nfa = findById(id);
