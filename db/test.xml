@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<automata>
+    <!-- Автомат 'a': приема само буквата 'a' -->
+    <automaton id="a">
+        <initialState>q0</initialState>
+        <finalStates><state>q1</state></finalStates>
+        <transitions>
+            <transition><from>q0</from><to>q1</to><symbol>a</symbol></transition>
+        </transitions>
+    </automaton>
+
+    <!-- Автомат 'b': приема само буквата 'b' -->
+    <automaton id="b">
+        <initialState>s0</initialState>
+        <finalStates><state>s1</state></finalStates>
+        <transitions>
+            <transition><from>s0</from><to>s1</to><symbol>b</symbol></transition>
+        </transitions>
+    </automaton>
+</automata>

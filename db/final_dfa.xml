@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<automata>
+    <automaton id="det_union_0">
+        <initialState>D0</initialState>
+        <finalStates>
+            <state>D1</state>
+            <state>D2</state>
+        </finalStates>
+        <transitions>
+            <transition>
+                <from>D0</from>
+                <to>D1</to>
+                <symbol>a</symbol>
+            </transition>
+            <transition>
+                <from>D0</from>
+                <to>D2</to>
+                <symbol>b</symbol>
+            </transition>
+        </transitions>
+    </automaton>
+</automata>
